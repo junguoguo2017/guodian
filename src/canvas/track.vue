@@ -2,6 +2,7 @@
     <div >
         <p><button @click="run(testPath)">轨迹回放</button></p>
         <div style="position: relative;">
+
             <canvas style="position: absolute;left: 0;top: 0;" id='line' width="600" height="200"></canvas>
             <canvas style="position: absolute;left: 0;top: 0;" id='marker' width="600" height="200"></canvas>
         </div>
@@ -11,11 +12,12 @@
 
 <script>
     export default {
-        name: "track",
+        name: "Track",
         data(){
             return{
                 testPath:[],
-                index:0
+                index:0,
+
             }
         },
         mounted(){

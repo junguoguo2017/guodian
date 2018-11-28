@@ -1,42 +1,61 @@
 <template>
     <div >
-        <div style="position: relative;">
-            <canvas id="canvas" width="800" height="500"></canvas>
-        </div>
-
+        <mapLayer>
+            <Gmarker :coords="coords" @markerClick="markerClick"></Gmarker>
+            <circleFence :areas="areas"></circleFence>
+        </mapLayer>
     </div>
 </template>
 
 <script>
+    import mapLayer from '../canvas/maplayer'
+    import Gmarker from '../canvas/marker'
+    import circleFence from '../canvas/circleFence'
     export default {
         name: "gl",
+        components:{
+            mapLayer,Gmarker,circleFence
+        },
         data(){
             return{
                 testPath:[],
+                coords:[],
+                areas:[]
             }
         },
         mounted(){
+            var self = this;
+           /* setInterval(()=>{
+                self.coords = []
+                for(var i=0;i<50;i++){
+                    self.coords.push({
+                        x:Math.random()*800,
+                        y:Math.random()*500,
+                        label:'点'+i
+                    })
+                }
+            },2000)*/
             for(var i=0;i<50;i++){
-                this.testPath.push({
+                self.coords.push({
                     x:Math.random()*800,
-                    y:Math.random()*500
+                    y:Math.random()*500,
+                    label:'点'+i,
+                    color:'rgba('+Math.random()*255+','+Math.random()*255+','+Math.random()*255+')'
                 })
             }
-            this.init(this.testPath)
+            for(var i=0;i<5;i++){
+                self.areas.push({
+                    center:[Math.random()*800,Math.random()*500],
+                    radius:40,
+                    fillcolor:'rgba('+Math.random()*255+','+Math.random()*255+','+Math.random()*255+')',
+                    strokecolor:'rgba('+Math.random()*255+','+Math.random()*255+','+Math.random()*255+')',
+                    label:'圆'+i,
+                })
+            }
         },
         methods:{
-            init(Path) {
-                var canvas = document.getElementById('canvas')
-                var ctx = canvas.getContext('2d');
-
-                ctx.fillStyle = 'red'
-                Path.forEach((item)=>{
-                    ctx.beginPath();
-                    ctx.arc(item.x,item.y,4,0,Math.PI*2)
-                    ctx.fill()
-                    ctx.closePath();
-                });
-
+            markerClick(val){
+                console.log(val)
             }
         }
     }
