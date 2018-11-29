@@ -78,7 +78,7 @@
                 this.clickPointX=event.clientX-this.circleCanvas.getBoundingClientRect().left;
                 this.clickPointY=event.clientY-this.circleCanvas.getBoundingClientRect().top;
                // this.ctx.clearRect(this.circleCanvas.offsetLeft,this.circleCanvas.offsetTop,this.width,this.height);
-               
+
                 if(this.ctx.isPointInPath(this.clickPointX, this.clickPointY)){//点击选中该区域
                     this.ctx.strokeStyle ='red';
                     self.circleCanvas.onmousedown = function(e) {
