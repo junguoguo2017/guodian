@@ -37,7 +37,7 @@
             let self = this;
             this.circleCanvas = document.getElementById('circleCanvas')
             this.ctx = this.circleCanvas.getContext('2d');
-            this.circleCanvas.addEventListener('mouseover',this.circleHover,false);//绑定鼠标滑过圆边框
+            this.circleCanvas.addEventListener('mousemove',this.circleHover,false);//绑定鼠标滑过圆边框
             /*this.circleCanvas.addEventListener('click',this.circleClick,false);//点击*/
             setTimeout(()=>{
                 self.height = self.$parent.height;
@@ -73,51 +73,6 @@
                 })
             },
             circleHover(event){
-                let self = this;
-                let isAllowDrawLine = false
-                this.clickPointX=event.clientX-this.circleCanvas.getBoundingClientRect().left;
-                this.clickPointY=event.clientY-this.circleCanvas.getBoundingClientRect().top;
-               // this.ctx.clearRect(this.circleCanvas.offsetLeft,this.circleCanvas.offsetTop,this.width,this.height);
-
-                if(this.ctx.isPointInPath(this.clickPointX, this.clickPointY)){//点击选中该区域
-                    this.ctx.strokeStyle ='red';
-                    self.circleCanvas.onmousedown = function(e) {
-                        isAllowDrawLine = true
-
-                        self.center = ele
-
-                        self.circleCanvas.onmousemove = (e) => {
-                            if (isAllowDrawLine) {
-
-                                context.clearRect(0,0,theCanvas.width,theCanvas.height);
-                                this.areas.forEach((cicle)=>{
-                                    /*圆名称*/
-                                    this.ctx.beginPath();
-                                    this.ctx.fillStyle = '#fff'
-                                    this.ctx.font="14px 微软雅黑";
-                                    this.ctx.fillText(cicle.label,cicle.center[0]-this.ctx.measureText(cicle.label).width/2,  cicle.center[1]+5)
-                                    this.ctx.fill()
-                                    this.ctx.closePath()
-                                    /*绘制圆*/
-                                    this.ctx.beginPath()
-                                    /*  this.ctx.fillStyle = 'rgba(0,0,0,.4)';*/
-                                    this.ctx.strokeStyle = cicle.strokecolor;
-                                    this.ctx.arc(cicle.center[0],  cicle.center[1], cicle.radius, 0, 2 * Math.PI);
-
-
-                                    /* this.ctx.fill()*/
-                                    this.ctx.stroke()
-                                    this.ctx.closePath()
-                                })
-
-                            }
-                        }
-                    }
-                    self.circleCanvas.onmouseup = function() {
-                        isAllowDrawLine = false
-                    }
-                }
-
 
 
             },
