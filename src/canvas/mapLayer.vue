@@ -36,7 +36,7 @@
                     canvas.height = img.height;
                     canvas.width = img.width;
                     //ctx.drawImage(img, 0, 0);  //在指定点绘制图像(原始大小)
-                    ctx.drawImage(img, 0, 0, 1000, 500); // 在指定点绘制图像(使用指定的宽和高)
+                    ctx.drawImage(img, 0, 0, img.width, img.height); // 在指定点绘制图像(使用指定的宽和高)
                 };
 
 

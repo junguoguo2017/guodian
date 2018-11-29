@@ -73,6 +73,49 @@
                 })
             },
             circleHover(event){
+                let self = this;
+                this.clickPointX=event.clientX-this.circleCanvas.getBoundingClientRect().left;
+                this.clickPointY=event.clientY-this.circleCanvas.getBoundingClientRect().top;
+
+                this.ctx.clearRect(this.circleCanvas.offsetLeft,this.circleCanvas.offsetTop,this.width,this.height);
+                this.areas.forEach((cicle)=>{
+                    /*圆名称*/
+                    this.ctx.beginPath();
+                    this.ctx.fillStyle = '#fff'
+                    this.ctx.font="14px 微软雅黑";
+                    this.ctx.fillText(cicle.label,cicle.center[0]-this.ctx.measureText(cicle.label).width/2,  cicle.center[1]+5)
+                    this.ctx.fill()
+                    this.ctx.closePath()
+                    /*绘制圆*/
+                    this.ctx.beginPath()
+                    this.ctx.fillStyle = 'rgba(0,0,0,.4)';
+                    this.ctx.strokeStyle = cicle.strokecolor;
+                    this.ctx.lineWidth = 2
+                    this.ctx.arc(cicle.center[0],  cicle.center[1], cicle.radius, 0, 2 * Math.PI);
+
+
+                    if(this.ctx.isPointInPath(this.clickPointX, this.clickPointY)){//选中该区域
+                        this.ctx.lineWidth = 5
+                        this.ctx.strokeStyle = 'red';
+                        let isAllowDrawLine = false
+                        this.circleCanvas.onmousedown = function(e) {
+                            isAllowDrawLine = true
+                            this.circleCanvas.onmousemove = (e) => {
+                                if (isAllowDrawLine) {
+                                    console.log(e.clientX)
+                                }
+                            }
+                        }
+                        this.circleCanvas.onmouseup = function() {
+                            isAllowDrawLine = false
+                        }
+                    }
+                     this.ctx.fill()
+                    this.ctx.stroke()
+                    this.ctx.closePath()
+                })
+
+
 
 
             },
