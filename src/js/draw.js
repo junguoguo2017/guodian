@@ -49,17 +49,17 @@ var canvas=document.getElementById('canvas'),
 * 获取操作按钮值
  * */
 function getEnv(){
-    var lw=document.getElementById('size').value,
-        strokeStyle=document.getElementById('strokeColor').value,
-        fillStyle=document.getElementById('fillColor').value,
-        sides=document.getElementById('sides').value,
-        stars=document.getElementById('stars').value,
-        isFill=document.getElementById('isFill').checked,
-        grid=document.getElementById('grid').checked,
-        guid=document.getElementById('guid').checked,
+    var lw=document.getElementById('size').value,//绘制线条粗细
+        strokeStyle=document.getElementById('strokeColor').value,//描边颜色
+        fillStyle=document.getElementById('fillColor').value,//填充颜色
+        sides=document.getElementById('sides').value,//多边形边数
+        stars=document.getElementById('stars').value,//多角星 星数
+        isFill=document.getElementById('isFill').checked,//是否填充
+        grid=document.getElementById('grid').checked,//背景格子
+        guid=document.getElementById('guid').checked,//导航线
         control=document.getElementById('control').checked,
         type='solid',
-        elems=document.getElementsByName('type');
+        elems=document.getElementsByName('type');//所有类型
     for(var i=0,len=elems.length;i<len;i++){
         if(elems[i].checked){
             type=elems[i].id;break;
@@ -204,33 +204,7 @@ class Graph{
         if(this.isFill){ ctx.fill(); }
         ctx.restore();
     }
-    createCode(){
-        var codes=['// '+this.name];
-        codes.push('ctx.save();');
-        codes.push('ctx.lineWidth='+this.lineWidth);
-        codes.push('ctx.strokeStyle=\''+this.strokeStyle+'\';');
-        if(this.isFill){
-            codes.push('ctx.fillStyle=\''+this.fillStyle+'\';');
-        }
-        codes.push('ctx.beginPath();');
-        codes.push('ctx.translate('+this.x+','+this.y+');')//translate到中心点，方便使用
-        this.points.forEach((p,i)=>{
-            if(i==0){
-                codes.push('ctx.moveTo('+(p.x-this.x)+','+(p.y-this.y)+');');
-                // codes.push('ctx.moveTo('+(p.x)+','+(p.y)+');');
-            } else {
-                codes.push('ctx.lineTo('+(p.x-this.x)+','+(p.y-this.y)+');');
-                // codes.push('ctx.lineTo('+(p.x)+','+(p.y)+');');
-            }
-        });
-        codes.push('ctx.closePath();');
-        codes.push('ctx.stroke();');
-        if(this.isFill){
-            codes.push('ctx.fill();');
-        }
-        codes.push('ctx.restore();');
-        return codes.join('\n');
-    }
+
 }
 /**
  *实线
@@ -261,27 +235,12 @@ class Line extends Graph{
         ctx.stroke();
         ctx.restore();
     }
-    createCode(){
-        var codes=['// '+this.name];
-        codes.push('ctx.lineWidth='+this.lineWidth);
-        codes.push('ctx.strokeStyle=\''+this.strokeStyle+'\';');
-        codes.push('ctx.beginPath();');
-        this.points.forEach((p,i)=>{
-            if(i==0){
-                codes.push('ctx.moveTo('+p.x+','+p.y+');');
-            } else {
-                codes.push('ctx.lineTo('+p.x+','+p.y+');');
-            }
-        });
-        codes.push('ctx.closePath();');
-        codes.push('ctx.stroke();');
-        return codes.join('\n');
-    }
+
 }
 /**
 * 虚线
  * */
-class Dash extends Line{
+/*class Dash extends Line{
     constructor(pos){
         super(pos);
         this.name='虚线'
@@ -311,34 +270,12 @@ class Dash extends Line{
         });
         ctx.restore();
     }
-    createCode(){
-        var codes=['// '+this.name];
-        codes.push('ctx.lineWidth='+this.lineWidth);
-        codes.push('ctx.strokeStyle=\''+this.strokeStyle+'\';');
 
-        var dashLen=dashLen||5,
-            points=this.points;
-        codes.push('ctx.beginPath();');
-        points.forEach((point,i)=>{
-            if(i==0){
-                codes.push('ctx.moveTo('+point.x+','+point.y+');');
-            } else {
-                var deltaX=point.x-points[i-1].x,
-                    deltaY=point.y-points[i-1].y,
-                    dashNums=Math.floor(Math.sqrt(deltaX*deltaX+deltaY*deltaY)/dashLen);
-                for(var j=1;j<dashNums;j++){
-                    codes.push('ctx.'+(j%2==0?'moveTo':'lineTo')+'('+Math.floor(points[i-1].x+(deltaX/dashNums)*j)+','+Math.floor(points[i-1].y+(deltaY/dashNums)*j)+');');
-                }
-                codes.push('ctx.stroke();');
-            }
-        });
-        return codes.join('\n');
-    }
-}
+}*/
 /**
 * 二次贝塞尔曲线
 * */
-class Bezier extends Line {
+/*class Bezier extends Line {
     constructor(pos){
         super(pos);
         this.points=[pos,pos,pos,pos];
@@ -386,21 +323,12 @@ class Bezier extends Line {
         ctx.stroke();
         ctx.restore();
     }
-    createCode(){
-        var codes=['// '+this.name];
-        codes.push('ctx.lineWidth='+this.lineWidth);
-        codes.push('ctx.strokeStyle=\''+this.strokeStyle+'\';');
-        codes.push('ctx.beginPath();');
-        codes.push(`ctx.moveTo(${this.points[0].x},${this.points[0].y});`);
-        codes.push(`ctx.bezierCurveTo(${this.points[2].x},${this.points[2].y},${this.points[3].x},${this.points[3].y},${this.points[1].x},${this.points[1].y});`);
-        codes.push('ctx.stroke();');
-        return codes.join('\n');
-    }
-}
+
+}*/
 /**
  * 三次贝塞尔曲线
  * */
-class Quadratic extends Line{
+/*class Quadratic extends Line{
     constructor(pos){
         super(pos);
         this.points=[pos,pos,pos];
@@ -444,22 +372,13 @@ class Quadratic extends Line{
         ctx.stroke();
         ctx.restore();
     }
-    createCode(){
-        var codes=['// '+this.name];
-        codes.push('ctx.lineWidth='+this.lineWidth);
-        codes.push('ctx.strokeStyle=\''+this.strokeStyle+'\';');
-        codes.push('ctx.beginPath();');
-        codes.push(`ctx.moveTo(${this.points[0].x},${this.points[0].y});`);
-        codes.push(`ctx.quadraticCurveTo(${this.points[2].x},${this.points[2].y},${this.points[1].x},${this.points[1].y});`);
-        codes.push('ctx.stroke();');
-        return codes.join('\n');
-    }
 
-}
+
+}*/
 /**
  * 多边形
  */
-class Polygon extends Graph{
+/*class Polygon extends Graph{
     constructor(pos){
         super(pos);
         this.cPoints=[];
@@ -568,11 +487,11 @@ class Polygon extends Graph{
         this.drawCPoints(ctx);
         this.drawCenter(ctx);
     }
-}
+}*/
 /**
  * 五角星
  * */
-class Star extends Polygon{
+/*class Star extends Polygon{
     constructor(pos){
         super(pos);
         this.cPoints=[];
@@ -649,12 +568,12 @@ class Star extends Polygon{
         }
     }
 
-}
+}*/
 
 /**
  * 三角形
  */
-class Triangle extends Graph{
+/*class Triangle extends Graph{
     constructor(pos){
         super(pos);
         this.points=[pos,pos,pos];
@@ -672,7 +591,7 @@ class Triangle extends Graph{
         this.x=Math.round((x1*2+x2)/3);
         this.y=Math.round((y2*2+y1)/3);
     }
-}
+}*/
 /**
  * 矩形
  */
@@ -698,7 +617,7 @@ class Rect extends Graph{
 /**
  * 圆形
  */
-class Round extends Graph{
+/*class Round extends Graph{
     constructor(pos){
         super(pos);
         this.points=[];
@@ -707,7 +626,7 @@ class Round extends Graph{
     }
     update(i,pos){
         if(i==9999){
-            /*	if(!this.points[0]){return;}*/
+            /!*	if(!this.points[0]){return;}*!/
             var x1=pos.x-this.x,
                 y1=pos.y-this.y;
             this.points[0].x+=x1;
@@ -727,26 +646,12 @@ class Round extends Graph{
         ctx.beginPath();
         ctx.arc(this.x,this.y,this.radius,0,Math.PI*2,false);
     }
-    createCode(){
-        var codes=['// '+this.name];
-        codes.push('ctx.lineWidth='+this.lineWidth);
-        codes.push('ctx.strokeStyle=\''+this.strokeStyle+'\';');
-        if(this.isFill){
-            codes.push('ctx.fillStyle=\''+this.fillStyle+'\';');
-        }
-        codes.push('ctx.beginPath();');
-        codes.push('ctx.arc('+this.x+','+this.y+','+this.radius+',0,Math.PI*2,false);');
-        codes.push('ctx.stroke();');
-        if(this.isFill){
-            codes.push('ctx.fill();');
-        }
-        return codes.join('\n');
-    }
-}
+
+}*/
 /**
  * 椭圆
  */
-class Ellipse extends Graph{
+/*class Ellipse extends Graph{
     constructor(pos){
         super(pos);
         this.angle=0;
@@ -847,36 +752,8 @@ class Ellipse extends Graph{
         }
         ctx.restore();
     }
-    createCode(){
-        var k = .5522848,
-            x=0, y=0,
-            a=this.a, b=this.b,
-            ox = a * k,
-            oy = b * k;
-        var codes=['// '+this.name];
-        codes.push('ctx.save();');
-        codes.push('ctx.lineWidth='+this.lineWidth);
-        codes.push('ctx.strokeStyle=\''+this.strokeStyle+'\';');
-        if(this.isFill){
-            codes.push('ctx.fillStyle=\''+this.fillStyle+'\';');
-        }
-        codes.push('ctx.translate('+this.x+','+this.y+');');
-        codes.push('ctx.rotate('+this.angle+');');
-        codes.push('ctx.beginPath();');
-        codes.push('ctx.moveTo('+(x - a)+', '+y+');');
-        codes.push('ctx.bezierCurveTo('+(x - a)+', '+(y - oy)+', '+(x - ox)+', '+(y - b)+', '+x+','+ (y - b)+');');
-        codes.push('ctx.bezierCurveTo('+(x + ox)+', '+(y - b)+', '+(x + a)+', '+(y - oy)+', '+(x + a)+','+ y+');');
-        codes.push('ctx.bezierCurveTo('+(x + a)+', '+(y + oy)+', '+(x + ox)+', '+(y + b)+', '+x+', '+(y + b)+');');
-        codes.push('ctx.bezierCurveTo('+(x - ox)+', '+(y + b)+', '+(x - a)+', '+(y + oy)+', '+(x - a)+', '+y+');');
-        codes.push('ctx.closePath();');
-        codes.push('ctx.stroke();');
-        if(this.isFill){
-            codes.push('ctx.fill();');
-        }
-        codes.push('ctx.restore();');
-        return codes.join('\n');
-    }
-}
+
+}*/
 document.getElementsByClassName('toolbar')[0].addEventListener('click',function(e){
     if(e.target.getAttribute('type')=='radio'){
         drawing=true;
@@ -966,17 +843,7 @@ document.getElementById('clear').onclick=function(){
     drawBG();
     document.getElementById('codes').value='';
 }
-document.getElementById('createCode').onclick=function(){
-    var codes=[];
-    codes.push('var canvas=document.getElementById(\'canvas\'),');
-    codes.push('	ctx=canvas.getContext(\'2d\');');
-    // codes.push('ctx.save();');
-    shapes.forEach(s=>{
-        codes.push(s.createCode());
-    });
-    // codes.push('ctx.restore();');
-    document.getElementById('codes').value=codes.join('\n');
-}
+
 document.getElementById('grid').onclick=document.getElementById('control').onclick=function(e){
     drawBG();
     drawGraph();
