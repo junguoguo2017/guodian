@@ -48,23 +48,18 @@ var canvas=document.getElementById('canvas'),
 /**
 * 获取操作按钮值
  * */
-function getEnv(){
-    var lw=document.getElementById('size').value,//绘制线条粗细
-        strokeStyle=document.getElementById('strokeColor').value,//描边颜色
-        fillStyle=document.getElementById('fillColor').value,//填充颜色
-        sides=document.getElementById('sides').value,//多边形边数
-        stars=document.getElementById('stars').value,//多角星 星数
-        isFill=document.getElementById('isFill').checked,//是否填充
-        grid=document.getElementById('grid').checked,//背景格子
-        guid=document.getElementById('guid').checked,//导航线
-        control=document.getElementById('control').checked,
-        type='solid',
-        elems=document.getElementsByName('type');//所有类型
-    for(var i=0,len=elems.length;i<len;i++){
-        if(elems[i].checked){
-            type=elems[i].id;break;
-        }
-    }
+function getEnv(opts){
+    var lw=opts.lw||1,//绘制线条粗细
+        strokeStyle=opts.strokeStyle||'#000000',//描边颜色
+        fillStyle=opts.fillStyle||'blue',//填充颜色
+        sides=opts.sides||5,//多边形边数
+        stars=opts.stars||5,//多角星 星数
+        isFill=opts.isFill||false,//是否填充
+        grid=opts.grid||true,//背景格子
+        guid=opts.guid||true,//导航线
+        control=opts.control||true,
+        type=opts.type||'solid';//所有类型
+
 
     return {
         lineWidth:lw,
@@ -84,10 +79,7 @@ function getEnv(){
 * 重置绘制类型
  * */
 function resetDrawType(){
-    var elems=document.getElementsByName('type');
-    for(var i=0,len=elems.length;i<len;i++){
-        elems[i].checked=false;
-    }
+    type = 'solid'
     drawing=false;
 }
 // 生成对应图形的对象工厂
@@ -106,9 +98,9 @@ function factory(type,pos){
         default:return new Line(pos);
     }
 }
-
+//初始化图形需要用到的属性，位置，顶点列表，边的宽度，描边颜色，填充颜色，是否填充；
 class Graph{
-    //初始化图形需要用到的属性，位置，顶点列表，边的宽度，描边颜色，填充颜色，是否填充；
+
     constructor(pos){
         this.x=pos.x;
         this.y=pos.y;
@@ -754,11 +746,11 @@ class Rect extends Graph{
     }
 
 }*/
-document.getElementsByClassName('toolbar')[0].addEventListener('click',function(e){
+/*document.getElementsByClassName('toolbar')[0].addEventListener('click',function(e){
     if(e.target.getAttribute('type')=='radio'){
         drawing=true;
     }
-},false);
+},false);*/
 canvas.addEventListener('mousedown',function(e){
     mouseStart=WindowToCanvas(canvas,e.clientX,e.clientY);
     env=getEnv();
@@ -785,7 +777,6 @@ canvas.addEventListener('mousedown',function(e){
             }
         }
     }
-    console.log(activeShape)
     // saveImageData();
     canvas.addEventListener('mousemove',mouseMove,false);
     canvas.addEventListener('mouseup',mouseUp,false);
@@ -837,28 +828,36 @@ canvas.addEventListener('mousemove',function(e){
     currPos.y=Math.round(currPos.y);
     showInfo(currPos);
 },false);
-
-document.getElementById('clear').onclick=function(){
+/*清空图型*/
+function clearPath(){
+    shapes.length=0;
+    drawBG();
+}
+/*document.getElementById('clear').onclick=function(){
     shapes.length=0;
     drawBG();
     document.getElementById('codes').value='';
-}
-
-document.getElementById('grid').onclick=document.getElementById('control').onclick=function(e){
+}*/
+/*显示网格 控制线*/
+function showBg_Con(){
     drawBG();
     drawGraph();
 }
-document.getElementById('size').onchange=setValue;
+/*document.getElementById('grid').onclick=document.getElementById('control').onclick=function(e){
+    drawBG();
+    drawGraph();
+}*/
+/*document.getElementById('size').onchange=setValue;
 document.getElementById('strokeColor').onchange=setValue;
 document.getElementById('fillColor').onchange=setValue;
 function setValue(){
     this.nextElementSibling.innerHTML = this.value;
-}
-function showInfo(pos){
+}*/
+/*function showInfo(pos){
     var elem=document.getElementById('pos');
     elem.children[0].innerHTML = pos.x;
     elem.children[1].innerHTML = pos.y;
-}
+}*/
 //绘制背景
 function drawBG(){
     ctx.clearRect(0,0,W,H);

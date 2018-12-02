@@ -1,9 +1,9 @@
 <template>
     <div >
-        <mapLayer>
+        <!--<mapLayer>
             <Gmarker :coords="coords" @markerClick="markerClick"></Gmarker>
             <circleFence :areas="areas"></circleFence>
-        </mapLayer>
+        </mapLayer>-->
     </div>
 </template>
 
@@ -34,7 +34,7 @@
                         label:'点'+i
                     })
                 }
-            },2000)*/
+            },2000)
             for(var i=0;i<50;i++){
                 self.coords.push({
                     x:Math.random()*800,
@@ -51,7 +51,7 @@
                     strokecolor:'rgba('+Math.random()*255+','+Math.random()*255+','+Math.random()*255+')',
                     label:'圆'+i,
                 })
-            }
+            }*/
         },
         methods:{
             markerClick(val){
