@@ -8,9 +8,9 @@ import fly_ui from "./install";
 Vue.config.productionTip = false
 /* eslint-disable no-new */
 Vue.use(fly_ui);
-let VConsole = require('../node_modules/vconsole/dist/vconsole.min');
+/*let VConsole = require('../node_modules/vconsole/dist/vconsole.min');
 let vConsole = new VConsole();//初始化
-Vue.use(vConsole);//设为全局
+Vue.use(vConsole);//设为全局*/
 new Vue({
   el: '#app',
     router,

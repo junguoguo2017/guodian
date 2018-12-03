@@ -6,17 +6,16 @@ function WindowToCanvas(t, n, e) {
         y: e - o.top * (t.height / o.height)
     }
 };
-/**
-* 绘制背景网格
-* */
 function DrawGrid(t, n, e, o) {
     t.save(),
-        t.lineWidth = .5,//绘制网格线粗细
+        t.lineWidth = .5,
         t.strokeStyle = n;
     for (var r = e + .5; r < t.canvas.width; r += e)
+
         t.beginPath(),
             t.moveTo(r, 0),
             t.lineTo(r, t.canvas.height),
+
             t.stroke();
     for (var r = o + .5; r < t.canvas.height; r += o)
         t.beginPath(),
@@ -25,18 +24,17 @@ function DrawGrid(t, n, e, o) {
             t.stroke();
     t.restore()
 };
-var canvas=document.getElementById('canvas'),
-    ctx=canvas.getContext('2d'),
-    W=canvas.width,H=canvas.height,
-    currPos={x:0,y:0},
+var currPos={x:0,y:0},
     mouseStart={x:0,y:0},
     mouseEnd={x:0,y:0},
     drawing=false,
     activeShape=null,
     imgData=null,
     index=-1,
-    env=getEnv(),
+    env={},
     shapes=[];
+
+
 
 // function saveImageData(){
 // 	imgData=ctx.getImageData(0,0,W,H);
@@ -45,62 +43,19 @@ var canvas=document.getElementById('canvas'),
 // function restoreImageData(){
 // 	ctx.putImageData(imgData,0,0);
 // }
-/**
-* 获取操作按钮值
- * */
-function getEnv(opts){
-    var lw=opts.lw||1,//绘制线条粗细
-        strokeStyle=opts.strokeStyle||'#000000',//描边颜色
-        fillStyle=opts.fillStyle||'blue',//填充颜色
-        sides=opts.sides||5,//多边形边数
-        stars=opts.stars||5,//多角星 星数
-        isFill=opts.isFill||false,//是否填充
-        grid=opts.grid||true,//背景格子
-        guid=opts.guid||true,//导航线
-        control=opts.control||true,
-        type=opts.type||'solid';//所有类型
 
 
-    return {
-        lineWidth:lw,
-        strokeStyle:strokeStyle,
-        fillStyle:fillStyle,
-        type:type,
-        sides:sides,
-        stars:stars,
-        isFill:isFill,
-        grid:grid,
-        guid:guid,
-        control:control
-    };
-};
 
-/**
-* 重置绘制类型
- * */
-function resetDrawType(){
-    type = 'solid'
-    drawing=false;
-}
-// 生成对应图形的对象工厂
-function factory(type,pos){
-    switch(type){
-        case 'line': return new Line(pos);
-        case 'dash': return new Dash(pos);
-        case 'quadratic': return new Quadratic(pos);
-        case 'bezier': return new Bezier(pos);
-        case 'triangle': return new Triangle(pos);
-        case 'rect': return new Rect(pos);
-        case 'round': return new Round(pos);
-        case 'polygon': return new Polygon(pos);
-        case 'star': return new Star(pos);
-        case 'ellipse': return new Ellipse(pos);
-        default:return new Line(pos);
+/*function resetDrawType(){
+    var elems=document.getElementsByName('type');
+    for(var i=0,len=elems.length;i<len;i++){
+        elems[i].checked=false;
     }
-}
+    drawing=false;
+}*/
+
 //初始化图形需要用到的属性，位置，顶点列表，边的宽度，描边颜色，填充颜色，是否填充；
 class Graph{
-
     constructor(pos){
         this.x=pos.x;
         this.y=pos.y;
@@ -118,6 +73,7 @@ class Graph{
         this.y=(start.y+end.y)/2;
     }
     update(i,pos){
+        console.log(i)
         if(i==9999){
             var that=this,
                 x1=pos.x-this.x,
@@ -164,7 +120,7 @@ class Graph{
         this.drawPoints(ctx);
         this.drawCenter(ctx);
     }
-    drawPoints(){
+    drawPoints(ctx){
         ctx.save();
         ctx.lineWidth=2;
         ctx.strokeStyle='#999';
@@ -232,7 +188,7 @@ class Line extends Graph{
 /**
 * 虚线
  * */
-/*class Dash extends Line{
+class Dash extends Line{
     constructor(pos){
         super(pos);
         this.name='虚线'
@@ -263,7 +219,7 @@ class Line extends Graph{
         ctx.restore();
     }
 
-}*/
+}
 /**
 * 二次贝塞尔曲线
 * */
@@ -370,7 +326,7 @@ class Line extends Graph{
 /**
  * 多边形
  */
-/*class Polygon extends Graph{
+class Polygon extends Graph{
     constructor(pos){
         super(pos);
         this.cPoints=[];
@@ -479,7 +435,7 @@ class Line extends Graph{
         this.drawCPoints(ctx);
         this.drawCenter(ctx);
     }
-}*/
+}
 /**
  * 五角星
  * */
@@ -609,7 +565,7 @@ class Rect extends Graph{
 /**
  * 圆形
  */
-/*class Round extends Graph{
+class Round extends Graph{
     constructor(pos){
         super(pos);
         this.points=[];
@@ -618,7 +574,7 @@ class Rect extends Graph{
     }
     update(i,pos){
         if(i==9999){
-            /!*	if(!this.points[0]){return;}*!/
+            /*	if(!this.points[0]){return;}*/
             var x1=pos.x-this.x,
                 y1=pos.y-this.y;
             this.points[0].x+=x1;
@@ -639,7 +595,7 @@ class Rect extends Graph{
         ctx.arc(this.x,this.y,this.radius,0,Math.PI*2,false);
     }
 
-}*/
+}
 /**
  * 椭圆
  */
@@ -751,98 +707,200 @@ class Rect extends Graph{
         drawing=true;
     }
 },false);*/
-canvas.addEventListener('mousedown',function(e){
-    mouseStart=WindowToCanvas(canvas,e.clientX,e.clientY);
-    env=getEnv();
-    activeShape=null;
 
-    //新建图形
-    if(drawing){
-        activeShape = factory(env.type,mouseStart);
-        activeShape.lineWidth = env.lineWidth;
-        activeShape.strokeStyle = env.strokeStyle;
-        activeShape.fillStyle = env.fillStyle;
-        activeShape.isFill = env.isFill;
-        activeShape.sides = env.sides;
-        activeShape.stars = env.stars;
-        shapes.push(activeShape);
-        index=-1;
-        drawGraph();
-    } else {
-        //选中控制点后拖拽修改图形
-        for(var i=0,len=shapes.length;i<len;i++){
-            if((index=shapes[i].isInPath(ctx,mouseStart))>-1){
-                canvas.style.cursor='crosshair';
-                activeShape=shapes[i];break;
-            }
-        }
-    }
-    // saveImageData();
-    canvas.addEventListener('mousemove',mouseMove,false);
-    canvas.addEventListener('mouseup',mouseUp,false);
-},false);
-// 鼠标移动
-function mouseMove(e){
-    mouseEnd=WindowToCanvas(canvas,e.clientX,e.clientY);
-    console.log(mouseEnd,activeShape)
-    if(activeShape){
-        if(index>-1){
-            activeShape.update(index,mouseEnd);
-        } else {
-            activeShape.initUpdate(mouseStart,mouseEnd);
-        }
+export default {
+    canvas:null,
+    ctx:null,
+    W:0,
+    H:0,
+    opts:{},
+    mapshape:{},
+    mapInit(canvasId,opts){
+        this.canvas=document.getElementById(canvasId);
+        this.ctx=this.canvas.getContext('2d');
+        this.W=this.canvas.width;
+        this.H=this.canvas.height;
+        this.opts = opts ||{}
+        this.getEnv()
+        drawing=true;
+        this.canvas.style.cursor='pointer';
+        this.drawBG();
+        var sf = this;
+        /*鼠标按下绘制*/
+        this.canvas.addEventListener('mousedown',function(e){
+            mouseStart=WindowToCanvas(sf.canvas,e.clientX,e.clientY);
+            env=sf.getEnv();
 
-        drawBG();
-        if(env.guid){drawGuidewires(mouseEnd.x,mouseEnd.y); }
-        drawGraph();
-    }
-    // restoreImageData();
-}
-// 鼠标结束
-function mouseUp(e){
-    canvas.style.cursor='pointer';
-    if(activeShape){
-        drawBG();
-        drawGraph();
-        resetDrawType();
-    }
-    canvas.removeEventListener('mousemove',mouseMove,false);
-    canvas.removeEventListener('mouseup',mouseUp,false);
-}
-// 删除图形
-document.body.onkeydown=function(e){
-    if(e.keyCode==8){
-        for(var i=0,len=shapes.length;i<len;i++){
-            if(shapes[i].isInPath(ctx,currPos)>-1){
-                shapes.splice(i--,1);
-                drawBG();
-                drawGraph();
-                break;
+            activeShape=null;
+            //新建图形
+            if(drawing){
+                activeShape = sf.factory(env.type,mouseStart);
+                activeShape.lineWidth = env.lineWidth;
+                activeShape.strokeStyle = env.strokeStyle;
+                activeShape.fillStyle = env.fillStyle;
+                activeShape.isFill = env.isFill;
+                activeShape.sides = env.sides;
+                activeShape.stars = env.stars;
+                shapes.push(activeShape);
+                index=-1;
+                sf.drawGraph();
+            } else {
+                console.log(123)
+                //选中控制点后拖拽修改图形
+                for(var i=0,len=shapes.length;i<len;i++){
+
+                    if((index=shapes[i].isInPath(sf.ctx,mouseStart))>-1){
+                        console.log('index:',index)
+                        sf.canvas.style.cursor='crosshair';
+                        activeShape=shapes[i];break;
+                    }
+                }
             }
+            // saveImageData();
+            sf.canvas.addEventListener('mousemove',mouseMove,false);
+            sf.canvas.addEventListener('mouseup',mouseUp,false);
+        },false);
+        // 鼠标移动
+        function mouseMove(e){
+            mouseEnd=WindowToCanvas(sf.canvas,e.clientX,e.clientY);
+            if(activeShape){
+                if(index>-1){
+                    activeShape.update(index,mouseEnd);
+                } else {
+                    activeShape.initUpdate(mouseStart,mouseEnd);
+                }
+                sf.drawBG();
+                if(env.guid){sf.drawGuidewires(sf.ctx,mouseEnd.x,mouseEnd.y); }
+                sf.drawGraph();
+            }
+            // restoreImageData();
         }
+        // 鼠标结束
+        function mouseUp(e){
+            sf.canvas.style.cursor='pointer';
+            console.log(activeShape)
+            if(activeShape){
+                sf.drawBG();
+                sf.drawGraph();
+                sf.resetDrawType();
+            }
+            sf.canvas.removeEventListener('mousemove',mouseMove,false);
+            sf.canvas.removeEventListener('mouseup',mouseUp,false);
+        }
+        /*移动*/
+        this.canvas.addEventListener('mousemove',function(e){
+            currPos=WindowToCanvas(sf.canvas,e.clientX,e.clientY);
+            currPos.x=Math.round(currPos.x);
+            currPos.y=Math.round(currPos.y);
+            //sf.mapshape.pos=currPos
+        },false);
+        // 删除图形
+        document.body.onkeydown=function(e){
+            if(e.keyCode==8){
+                for(var i=0,len=shapes.length;i<len;i++){
+                    if(shapes[i].isInPath(sf.ctx,currPos)>-1){
+                        shapes.splice(i--,1);
+                        sf.drawBG();
+                        sf.drawGraph();
+                        break;
+                    }
+                }
+            }
+        };
+    },
+    // 生成对应图形的对象工厂
+    factory(type,pos){
+        switch(type){
+            case 'line': return new Line(pos);
+            case 'dash': return new Dash(pos);
+            case 'quadratic': return new Quadratic(pos);
+            case 'bezier': return new Bezier(pos);
+            case 'triangle': return new Triangle(pos);
+            case 'rect': return new Rect(pos);
+            case 'round': return new Round(pos);
+            case 'polygon': return new Polygon(pos);
+            case 'star': return new Star(pos);
+            case 'ellipse': return new Ellipse(pos);
+            default:return new Line(pos);
+        }
+    },
+    /**
+     * 获取操作按钮值
+     * */
+    getEnv(){
+        return {
+            lineWidth:this.opts.lineWidth||1,//绘制线条粗细
+            strokeStyle:this.opts.strokeStyle||'#000000',//描边颜色
+            fillStyle:this.opts.fillStyle||'blue',//填充颜色
+            type:this.opts.type||'solid',//所有类型
+            sides:this.opts.sides||5,//多边形边数
+            stars:this.opts.stars||5,//多角星 星数
+            isFill:this.opts.isFill||false,//是否填充
+            grid:this.opts.grid||true,//背景格子
+            guid:this.opts.guid||true,//导航线
+            control:this.opts.control||true,
+        };
+    },
+    drawBG(){//绘制背景
+        this.ctx.clearRect(0,0,this.W,this.H);
+        if(this.getEnv().grid){DrawGrid(this.ctx,'lightGray',10,10); }
+    },
+    clearPath(){/*清空图型*/
+        shapes.length=0;
+        this.drawBG();
+    },
+    showBg_Con(){/*显示网格 控制线*/
+        this.drawBG();
+        this.drawGraph();
+    },
+    drawGuidewires(ctx,x,y){//网格
+        ctx.save();
+        ctx.strokeStyle='rgba(0,0,230,0.4)';
+        ctx.lineWidth=0.5;
+        ctx.beginPath();
+        ctx.moveTo(x+0.5,0);
+        ctx.lineTo(x+0.5,ctx.canvas.height);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(0,y+0.5);
+        ctx.lineTo(ctx.canvas.width,y+0.5);
+        ctx.stroke();
+        ctx.restore();
+    },
+    drawGraph(){ //绘制图形列表
+        var showControl=this.getEnv().control;
+        console.log(shapes)
+        shapes.forEach(shape=>{
+            shape.draw(this.ctx);
+            if(showControl){
+                shape.drawController(this.ctx);
+            }
+        });
+    },
+    /**
+     * 重置绘制类型
+     * */
+     resetDrawType(){
+        //type = 'solid'
+        drawing=false;
+    },
+    getPoint(){
+        return this.mapshape.point
+    },
+    setPoint(pos){
+
     }
-};
-canvas.addEventListener('mousemove',function(e){
-    currPos=WindowToCanvas(canvas,e.clientX,e.clientY);
-    currPos.x=Math.round(currPos.x);
-    currPos.y=Math.round(currPos.y);
-    showInfo(currPos);
-},false);
-/*清空图型*/
-function clearPath(){
-    shapes.length=0;
-    drawBG();
 }
+
+
+
+
+
 /*document.getElementById('clear').onclick=function(){
     shapes.length=0;
     drawBG();
     document.getElementById('codes').value='';
 }*/
-/*显示网格 控制线*/
-function showBg_Con(){
-    drawBG();
-    drawGraph();
-}
 /*document.getElementById('grid').onclick=document.getElementById('control').onclick=function(e){
     drawBG();
     drawGraph();
@@ -858,40 +916,9 @@ function setValue(){
     elem.children[0].innerHTML = pos.x;
     elem.children[1].innerHTML = pos.y;
 }*/
-//绘制背景
-function drawBG(){
-    ctx.clearRect(0,0,W,H);
-    if(getEnv().grid){DrawGrid(ctx,'lightGray',10,10); }
-}
-//网格
-function drawGuidewires(x,y){
-    ctx.save();
-    ctx.strokeStyle='rgba(0,0,230,0.4)';
-    ctx.lineWidth=0.5;
-    ctx.beginPath();
-    ctx.moveTo(x+0.5,0);
-    ctx.lineTo(x+0.5,ctx.canvas.height);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(0,y+0.5);
-    ctx.lineTo(ctx.canvas.width,y+0.5);
-    ctx.stroke();
-    ctx.restore();
-}
-//绘制图形列表
-function drawGraph(){
-    var showControl=getEnv().control;
-    shapes.forEach(shape=>{
-        shape.draw(ctx);
-        if(showControl){
-            shape.drawController(ctx);
-        }
-    });
-}
 
-function init(){
-    canvas.style.cursor='pointer';
-    drawBG();
-}
 
-init();
+
+
+
+

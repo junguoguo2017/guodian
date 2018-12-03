@@ -28,7 +28,7 @@
         mounted(){
             this.markerCanvas = document.getElementById('canvas')
             this.ctx = this.markerCanvas.getContext('2d');
-            this.markerCanvas.addEventListener('click',this.markerClick,false);//绑定点击柱状图事件
+            this.markerCanvas.addEventListener('click',this.markerClick,false);//绑
             let self = this;
             setTimeout(()=>{
                 self.height = self.$parent.height;
@@ -116,7 +116,5 @@
 </script>
 
 <style >
-.layer{
-    position: absolute;left: 0;top:0;
-}
+
 </style>
