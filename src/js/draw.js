@@ -745,12 +745,9 @@ export default {
                 index=-1;
                 sf.drawGraph();
             } else {
-                console.log(123)
                 //选中控制点后拖拽修改图形
                 for(var i=0,len=shapes.length;i<len;i++){
-
                     if((index=shapes[i].isInPath(sf.ctx,mouseStart))>-1){
-                        console.log('index:',index)
                         sf.canvas.style.cursor='crosshair';
                         activeShape=shapes[i];break;
                     }
@@ -778,7 +775,6 @@ export default {
         // 鼠标结束
         function mouseUp(e){
             sf.canvas.style.cursor='pointer';
-            console.log(activeShape)
             if(activeShape){
                 sf.drawBG();
                 sf.drawGraph();

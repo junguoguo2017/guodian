@@ -1,5 +1,6 @@
 <template>
-    <canvas class="layer"  id="canvas" :style="{zIndex:zIndex}"></canvas>
+    <!--<canvas class="layer"  id="canvas" :style="{zIndex:zIndex}"></canvas>-->
+    <div></div>
 </template>
 
 <script>
@@ -12,6 +13,13 @@
                     return []
                 }
             },
+            line:{
+                type:Array,
+                default:function () {
+                    return []
+                }
+            },
+
         },
         data(){
             return{

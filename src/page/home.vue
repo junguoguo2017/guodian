@@ -1,10 +1,12 @@
 <template>
     <div >
-        <div><button>绘制</button></div>
-        <mapLayer>
-            <Gmarker :coords="coords" @markerClick="markerClick"></Gmarker>
+        <div>
+            <button @click="draw">绘制</button>
+        </div>
+        <mapLayer :markers="markers" :lines="lines">
+           <!-- <Gmarker :coords="coords" @markerClick="markerClick"></Gmarker>-->
             <!--<circleFence :areas="areas"></circleFence>-->
-           <drawSharp></drawSharp>
+           <drawSharp v-if="drawShow" :opts="opts"></drawSharp>
         </mapLayer>
     </div>
 </template>
@@ -22,8 +24,15 @@
         data(){
             return{
                 testPath:[],
-                coords:[],
-                areas:[]
+                markers:[],
+                lines:[],
+                areas:[],
+                drawShow:false,
+                opts:{
+                    type:'rect',
+                    isFill:true,
+                    fillStyle:'rgba(0,0,0,.4)'
+                }
             }
         },
         mounted(){
@@ -40,13 +49,22 @@
                 }
             },2000)*/
             for(var i=0;i<50;i++){
-                self.coords.push({
+                self.markers.push({
                     x:Math.random()*800,
                     y:Math.random()*500,
                     label:'点'+i,
                     color:'rgba('+Math.random()*255+','+Math.random()*255+','+Math.random()*255+')'
                 })
             }
+            for(var i=0;i<5;i++){
+                self.lines.push({
+                    start:[Math.random()*800,Math.random()*500],
+                    end:[Math.random()*800,Math.random()*500],
+                    label:'点'+i,
+                   // color:'rgba('+Math.random()*255+','+Math.random()*255+','+Math.random()*255+')'
+                })
+            }
+
             /* for(var i=0;i<5;i++){
                    self.areas.push({
                         center:[Math.random()*800,Math.random()*500],
@@ -60,6 +78,9 @@
         methods:{
             markerClick(val){
                 console.log(val)
+            },
+            draw(){
+                this.drawShow = true
             }
         }
     }
